@@ -73,7 +73,7 @@ Eject the repo, change the tag and digest in `services/kafka/Dockerfile` after r
 
 **Resources**
 
-Measured idle use on Railway is listed in TEMPLATE.md. Kafka fits the Trial plan for light use; production traffic wants more RAM for the page cache.
+Measured idle on Railway: Kafka about 0.8 GB with its default 1 GB heap (0.38 GB under the Trial plan's 1 GB limit), Kafka UI about 0.45 GB (0.25 GB under 1 GB). Both fit the Trial plan for light use; production traffic wants more RAM for the page cache. The Free plan (0.5 GB) is too small.
 
 ### Why Deploy Apache Kafka on Railway?
 

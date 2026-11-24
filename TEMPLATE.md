@@ -32,8 +32,8 @@ Kafka UI variables: `AUTH_TYPE` LOGIN_FORM, `SPRING_SECURITY_USER_NAME` admin, `
 
 | Service | Idle RAM | Typical RAM | CPU |
 |---|---|---|---|
-| Kafka | KAFKA_RAM (measured) | heap + page cache | low idle |
-| Kafka UI | UI_RAM (measured) | 300-500 MB | low |
+| Kafka | 0.8 GB measured (1 GB heap); 0.38 GB under a 1 GB limit | heap + page cache | low idle |
+| Kafka UI | 0.45 GB measured; 0.25 GB under a 1 GB limit | 300-500 MB | low |
 
 Estimated cost: ≈$5-12/month idle-to-light + volume. Minimum plan: Trial for light use.
 
