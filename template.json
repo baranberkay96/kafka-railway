@@ -1,0 +1,163 @@
+{
+ "name": "Apache Kafka 4.4 with Kafbat UI",
+ "idSeed": "Apache Kafka 4.4 with Kafbat UI / 2026-11-24",
+ "description": "Kafka 4.4 broker in KRaft mode with SASL auth and a login-protected UI.",
+ "category": "Queues",
+ "tags": [
+  "kafka",
+  "apache-kafka",
+  "kraft",
+  "streaming",
+  "event-streaming",
+  "message-broker",
+  "kafka-ui",
+  "kafbat"
+ ],
+ "image": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kafka.svg",
+ "upstream": {
+  "kafka": "apache/kafka:4.4.0@sha256:833b867a9585a141da455dc2b57431c65cbccb27f11c91f694444cca9f777e0f (Apache-2.0)",
+  "ui": "kafbat/kafka-ui:v1.5.1@sha256:c0585fdfed6a9b8adedc3b0965113d4a84f292d61e58a2c7dcc603394defb7d1 (Apache-2.0)",
+  "checked": "2026-11-24"
+ },
+ "services": {
+  "Kafka": {
+   "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kafka.svg",
+   "source": {
+    "repo": "baranberkay96/kafka-railway",
+    "rootDirectory": "/services/kafka"
+   },
+   "healthcheckPath": "/healthz",
+   "healthcheckTimeout": 600,
+   "restartPolicyType": "ALWAYS",
+   "numReplicas": 1,
+   "publicDomain": false,
+   "tcpProxy": 9093,
+   "volume": {
+    "mountPath": "/var/lib/kafka/data"
+   },
+   "variables": {
+    "KAFKA_SASL_USERNAME": {
+     "defaultValue": "kafka",
+     "description": "SASL/SCRAM user for clients and the UI.",
+     "required": false
+    },
+    "KAFKA_SASL_PASSWORD": {
+     "defaultValue": "${{secret(32, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+     "description": "Password of that user (12+ chars), re-applied at every start.",
+     "required": false
+    },
+    "KAFKA_NUM_PARTITIONS": {
+     "defaultValue": "3",
+     "description": "Partitions for auto-created topics.",
+     "required": false
+    },
+    "KAFKA_AUTO_CREATE_TOPICS": {
+     "defaultValue": "true",
+     "description": "Create topics on first use (false = create them explicitly).",
+     "required": false
+    },
+    "KAFKA_LOG_RETENTION_HOURS": {
+     "defaultValue": "168",
+     "description": "How long messages are kept (hours).",
+     "required": false
+    },
+    "KAFKA_HEAP_MB": {
+     "defaultValue": "",
+     "description": "JVM heap in MB. Empty = 25% of the memory limit (256-1024).",
+     "required": false
+    },
+    "PORT": {
+     "defaultValue": "8080",
+     "description": "Private healthcheck port (GET /healthz), not a Kafka port.",
+     "required": false
+    },
+    "KAFKA_BOOTSTRAP_SERVERS": {
+     "defaultValue": "${{RAILWAY_PRIVATE_DOMAIN}}:9092",
+     "description": "Bootstrap address for Railway services (SASL_PLAINTEXT, SCRAM-SHA-512).",
+     "required": false
+    },
+    "KAFKA_PUBLIC_BOOTSTRAP_SERVERS": {
+     "defaultValue": "${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}",
+     "description": "Bootstrap address from outside Railway through the TCP proxy.",
+     "required": false
+    },
+    "RAILWAY_DEPLOYMENT_DRAINING_SECONDS": {
+     "defaultValue": "60",
+     "description": "Seconds Kafka gets for a controlled shutdown on redeploy.",
+     "required": false
+    }
+   }
+  },
+  "Kafka UI": {
+   "icon": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kafka.svg",
+   "source": {
+    "image": "kafbat/kafka-ui:v1.5.1@sha256:c0585fdfed6a9b8adedc3b0965113d4a84f292d61e58a2c7dcc603394defb7d1"
+   },
+   "healthcheckPath": "/actuator/health",
+   "healthcheckTimeout": 600,
+   "restartPolicyType": "ALWAYS",
+   "numReplicas": 1,
+   "publicDomain": true,
+   "targetPort": 8080,
+   "tcpProxy": null,
+   "variables": {
+    "AUTH_TYPE": {
+     "defaultValue": "LOGIN_FORM",
+     "description": "Kafbat UI login form (keep it; DISABLED would open the UI to anyone).",
+     "required": false
+    },
+    "SPRING_SECURITY_USER_NAME": {
+     "defaultValue": "admin",
+     "description": "UI login name.",
+     "required": false
+    },
+    "SPRING_SECURITY_USER_PASSWORD": {
+     "defaultValue": "${{secret(24, \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\")}}",
+     "description": "UI login password.",
+     "required": false
+    },
+    "KAFKA_CLUSTERS_0_NAME": {
+     "defaultValue": "railway",
+     "description": "Cluster name shown in the UI.",
+     "required": false
+    },
+    "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS": {
+     "defaultValue": "${{Kafka.KAFKA_BOOTSTRAP_SERVERS}}",
+     "description": "Kafka on the private network.",
+     "required": false
+    },
+    "KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL": {
+     "defaultValue": "SASL_PLAINTEXT",
+     "description": "Kafka client security protocol.",
+     "required": false
+    },
+    "KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM": {
+     "defaultValue": "SCRAM-SHA-512",
+     "description": "SASL mechanism.",
+     "required": false
+    },
+    "KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG": {
+     "defaultValue": "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"${{Kafka.KAFKA_SASL_USERNAME}}\" password=\"${{Kafka.KAFKA_SASL_PASSWORD}}\";",
+     "description": "SASL login built from the Kafka service's user and password.",
+     "required": false
+    },
+    "DYNAMIC_CONFIG_ENABLED": {
+     "defaultValue": "false",
+     "description": "Allow editing cluster connections in the UI.",
+     "required": false
+    },
+    "SERVER_PORT": {
+     "defaultValue": "8080",
+     "description": "Port the UI listens on.",
+     "required": false
+    },
+    "PORT": {
+     "defaultValue": "8080",
+     "description": "Same port, for Railway's healthcheck.",
+     "required": false
+    }
+   }
+  }
+ },
+ "buckets": []
+}
