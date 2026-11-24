@@ -19,7 +19,7 @@ for attempt in 1 2 3 4 5; do
     exit 0
   fi
   # Show why, without the password.
-  grep -m2 -E "Exception|Error|rror:" /tmp/railway-kafka-users.out | sed -E 's/password=[^],]*/password=***/g' | cut -c1-300 >&2
+  tail -n 4 /tmp/railway-kafka-users.out | sed -E 's/password=[^],]*/password=***/g' | cut -c1-300 >&2
   sleep 10
 done
 rm -f /tmp/railway-kafka-users.out
