@@ -1,5 +1,7 @@
 # Deploy and Host Apache Kafka with Railway
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/apache-kafka-44-with-kafbat-ui?referralCode=20H68q)
+
 Apache Kafka is the open-source distributed event streaming platform used for data pipelines, event-driven microservices, streaming analytics and log aggregation. This template runs Kafka 4.4 as a single KRaft node (no ZooKeeper) with SASL/SCRAM authentication, reachable privately and through a TCP proxy, plus Kafbat UI behind a login.
 
 ## About Hosting Apache Kafka
